@@ -2,7 +2,7 @@
 session_start();
 
 // Define the expected password hash (MD5)
-$expectedPasswordHash = '8dddbdc21a75416fe1af6211621ef973';
+$expectedPasswordHash = 'db69f6a50b11bfa9e0d10c242f75df59';
 
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
