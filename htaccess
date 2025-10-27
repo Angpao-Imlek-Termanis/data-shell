@@ -1,0 +1,28 @@
+# .htaccess — blokir akses langsung ke file tertentu (php, html, htm, htmls)
+
+<IfModule mod_authz_core.c>
+    # Apache 2.4+
+    <FilesMatch "\.(php|phtml|php[0-9]?|html?|htmls)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+    # Apache 2.2 fallback
+    <FilesMatch "\.(php|phtml|php[0-9]?|html?|htmls)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</IfModule>
+
+# Optional: hentikan eksekusi PHP & nonaktifkan handler (extra safety)
+<IfModule mod_php7.c>
+    <FilesMatch "\.(php|phtml|php[0-9]?)$">
+        SetHandler none
+    </FilesMatch>
+</IfModule>
+<IfModule mod_mime.c>
+    <FilesMatch "\.(html|htm|htmls)$">
+        ForceType text/plain
+    </FilesMatch>
+</IfModule>
