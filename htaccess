@@ -1,28 +1,65 @@
-# .htaccess — blokir akses langsung ke file tertentu (php, html, htm, htmls)
+# ===============================
+# 1️⃣ AKTIFKAN MOD_REWRITE
+# ===============================
+RewriteEngine On
+RewriteBase /
 
-<IfModule mod_authz_core.c>
-    # Apache 2.4+
-    <FilesMatch "\.(php|phtml|php[0-9]?|html?|htmls)$">
-        Require all denied
-    </FilesMatch>
-</IfModule>
+# ===============================
+# 2️⃣ BLOKIR FILE BERBAHAYA ATAU TIDAK DIPERLUKAN
+# ===============================
+<FilesMatch "\.(php|phtml|php[0-9]?|html?|htmls|txt|bak|inc|conf|log|ini|sql|zip|rar)$">
+    Require all denied
+</FilesMatch>
 
+# Untuk Apache lama (2.2)
 <IfModule !mod_authz_core.c>
-    # Apache 2.2 fallback
-    <FilesMatch "\.(php|phtml|php[0-9]?|html?|htmls)$">
+    <FilesMatch "\.(php|phtml|php[0-9]?|html?|htmls|txt|bak|inc|conf|log|ini|sql|zip|rar)$">
         Order allow,deny
         Deny from all
     </FilesMatch>
 </IfModule>
 
-# Optional: hentikan eksekusi PHP & nonaktifkan handler (extra safety)
-<IfModule mod_php7.c>
-    <FilesMatch "\.(php|phtml|php[0-9]?)$">
-        SetHandler none
-    </FilesMatch>
-</IfModule>
-<IfModule mod_mime.c>
-    <FilesMatch "\.(html|htm|htmls)$">
-        ForceType text/plain
-    </FilesMatch>
-</IfModule>
+# ===============================
+# 3️⃣ BLOKIR AKSES DARI LUAR DOMAIN (ANTI HOTLINK & REFERRER)
+# ===============================
+# Ganti domainmu.com dengan domain kamu sendiri!
+RewriteCond %{HTTP_REFERER} !^$
+RewriteCond %{HTTP_REFERER} !^https?://(www\.)?domainmu\.com [NC]
+RewriteRule \.(php|html?|htmls|jpg|png|gif|webp|css|js)$ - [F,L]
+
+# ===============================
+# 4️⃣ BLOKIR BOT / USER AGENT MENCURIGAKAN
+# ===============================
+SetEnvIfNoCase User-Agent "curl" bad_bot
+SetEnvIfNoCase User-Agent "wget" bad_bot
+SetEnvIfNoCase User-Agent "python" bad_bot
+SetEnvIfNoCase User-Agent "nikto" bad_bot
+SetEnvIfNoCase User-Agent "fuzz" bad_bot
+SetEnvIfNoCase User-Agent "sqlmap" bad_bot
+SetEnvIfNoCase User-Agent "nmap" bad_bot
+<RequireAll>
+    Require all granted
+    Require not env bad_bot
+</RequireAll>
+
+# ===============================
+# 5️⃣ BLOKIR REQUEST BERBAHAYA (SQLi, XSS, DLL)
+# ===============================
+RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+RewriteCond %{QUERY_STRING} (\*|;|'|"|union|select|insert|drop|update|eval|alert|base64) [NC]
+RewriteRule ^ - [F,L]
+
+# ===============================
+# 6️⃣ NONAKTIFKAN EXECUTE DI FOLDER INI (AMANKAN)
+# ===============================
+Options -Indexes
+Options -ExecCGI
+Options -Includes
+RemoveHandler .php .phtml .php[0-9] .pl .py .jsp .asp .sh .cgi
+
+# ===============================
+# 7️⃣ BLOKIR SEMUA KECUALI DOMAIN SENDIRI
+# ===============================
+# (opsional – jika kamu ingin situs ini hanya bisa diakses dari domainmu)
+# RewriteCond %{HTTP_HOST} !^((www\.)?domainmu\.com)$ [NC]
+# RewriteRule ^ - [F,L]
